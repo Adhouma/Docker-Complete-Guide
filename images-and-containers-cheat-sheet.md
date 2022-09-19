@@ -47,9 +47,9 @@
   ```
 
 ####  Remove all dangling images (untagged images)
-* docker image prun
+* docker image prune
   ```console
-    $ docker image prun
+    $ docker image prune
   ```
 
   Remove all locally stored images
