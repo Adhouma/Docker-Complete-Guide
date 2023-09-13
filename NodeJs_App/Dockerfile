@@ -5,6 +5,8 @@ FROM node:16.17.0
 WORKDIR /node-app
 
 # Copy package.json into this custom image file system under /node-app
+# Copy package.json then run npm install make it faster to build the image because if a layer change (layers example: FROM, WORKDIR, COPY, RUN, EXPOSE, CMD ...) then all layers after the changed layer have to rebuild
+# Therefore whenever changes our code (COPY . /node-app) we don't have to run npm install again we only run EXPOSE 80 and CMD [ "node", "server.js" ] layers
 COPY package.json /node-app
 
 # Run the npm install command inside our custom image inside our working directory (/node-app)
