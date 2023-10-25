@@ -37,6 +37,8 @@ CMD [ "node", "server.js" ]
 # Run a new container based on this custom image
 # Bind port 3000 for our machine to port 80 exposed in the container and use volumes
 # docker run -d -p 3000:80 --rm --env PORT=80 -v feedback-volume:/node-app/feedback volumes
+# feedback-volume is the name of the volume (You canspecify whatever name you want)
+# feedback-volume is a named volume (Named volumes survive when container is stopped unlike Anonymos volumes)
 
 # -v feedback-volume:/node-app/feedback => Use named volume (feedback-volume) in our machine 
 # and store it under our container under node-app/feedback folder
