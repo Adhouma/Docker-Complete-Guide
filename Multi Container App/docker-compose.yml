@@ -1,0 +1,52 @@
+version: '3.8'
+
+services: # Containers
+  mongodb:
+    container_name: mongodb
+    image: 'mongo'
+    volumes:
+      - data:/data/db # Named volume
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=max
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+
+  backend:
+    container_name: node_app
+    build: ./backend # Path to the Dockerfile
+    ports:
+      - '80:80'
+    volumes:
+      - logs:/app/logs # Named volume
+      - ./backend:/app # Bind mount
+      - /app/node_modules # Anonymos volume
+    environment:
+      - MONGODB_USERNAME=max
+      - MONGODB_PASSWORD=secret
+    depends_on:
+      - mongodb # This service (backend) deponds on the mongodb service (should be build and run after the mongodb)
+
+  frontend:
+    container_name: react_app
+    build: ./frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend/src:/app/src # Bind mount
+    depends_on:
+      - backend # This service (frontend) deponds on the backend service (should be build and run after the backend)
+    # Run in interactive mode (-it)
+    stdin_open: true
+    tty: true
+
+# Named volumes must be specified here
+volumes:
+  data:
+  logs:
+
+
+# docker-compose up => build, pull images and start the containers
+# docker-compose down => stop all the containers and remove all the networks
+# docker-compose down -v => to delete the named volumes
+
+# docker compose create a default network and add all the services (containers) to the same network
+# So there is no need to create custom network
