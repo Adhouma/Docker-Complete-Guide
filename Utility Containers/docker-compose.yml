@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  node-utility:
+    build: ./
+    volumes:
+      - ./:/app # Bind mount
+    stdin_open: true # Use interactive mode
+    tty: true # Use interactive mode
+
+# Use docker-compose run service_name to target a service and run command line
+# Example: 
+# docker-compose run node-utility init
+# docker-compose run node-utility add express
+
+# Use docker container exec [OPTIONS]
+# The docker exec command runs a new command in a running container.
