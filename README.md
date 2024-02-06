@@ -1,1 +1,0 @@
-# Docker The Complete Guide
