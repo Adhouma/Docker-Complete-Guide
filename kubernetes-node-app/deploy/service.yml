@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-service
+spec:
+  selector:
+    app: node-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+
+# For example, suppose you have a set of Pods that each listen on TCP port 8080 
+# and are labelled as node-app in the deployment config file. You can define a Service to publish that TCP listener.
+
+# Traffic from the external load balancer is directed at the backend Pods. The cloud provider decides how it is load balanced.
+
+# Run this service with
+# kubectl apply -f ./deploy/service.yml
+
+# Expose the service in your machine http://127.0.0.1:62545 for example using this command
+# minikube service node-service

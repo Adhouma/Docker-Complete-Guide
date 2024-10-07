@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Deployment name
+  name: node-app-deployment
+  labels:
+    # Pod name
+    app: node-app
+# Deployment specification
+spec: 
+  replicas: 3
+  selector:
+    matchLabels:
+      app: node-app
+  template:
+    metadata:
+      labels:
+        app: node-app
+    # Pod specification
+    spec:
+      containers:
+      - name: node-app
+        image: adhouma/kubernetes-node-app:v2
+        imagePullPolicy: Always
+        # To perform a probe, the kubelet sends an HTTP GET request to the server that is running in the container and listening on port 8080. 
+        # If the handler for the server's / path returns a success code, the kubelet considers the container to be alive and healthy. 
+        # If the handler returns a failure code, the kubelet kills the container and restarts it.
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
+
+
+# A Deployment named node-app-deployment is created, indicated by the .metadata.name field. 
+# This name will become the basis for the ReplicaSets and Pods which are created later.
+
+# The Deployment creates a ReplicaSet that creates three replicated Pods, indicated by the .spec.replicas field.
+
+# The .spec.selector field defines how the created ReplicaSet finds which Pods to manage. 
+# In this case, you select a label that is defined in the Pod template (app: node-app). 
+
+# Run this deployment with
+# kubectl apply -f ./deploy/deployment.yml
+
+# If you make changes, just retag your image and push it to dockerhub ... then restart your deployment to see the changes you made with
+# kubectl rollout restart deployment/node-app-deployment 
+
+# Get list of deployment with
+# kubectl get deployment
