@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+# Deployment name
+metadata:
+  name: story-deployment
+  labels:
+    app: story
+# Deployment specification
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: story
+  template:
+    metadata:
+      labels:
+        app: story
+    # Pod specification
+    spec:
+      containers:
+      - name: story
+        image: adhouma/kubernetes-data-app:v1
+        ports:
+        - containerPort: 3000
+        # Assign story-volume to containers
+        volumeMounts:
+        - mountPath: /app/story
+          name: story-volume
+      # Volume spec
+      volumes:
+        - name: story-volume
+          # Volume type is emptyDir
+          emptyDir: {}
+
+# For a Pod that defines an emptyDir volume, 
+# the volume is created when the Pod is assigned to a node. As the name says, 
+# the emptyDir volume is initially empty.
+# All containers in the Pod can read and write the same files in the emptyDir volume, 
+# though that volume can be mounted at the same or different paths in each container.
+# When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.
+
+# The emptyDir volume hava a downside => it will be destroyed when a pod is removed (Only work great with 1 replicas)
+# So its a non persistent volume
+
+# Run this deployment with
+# kubectl apply -f ./deploy/deployment.yml
+
+# If you make changes, just retag your image and push it to dockerhub ... then restart your deployment to see the changes you made with
+# kubectl rollout restart deployment/story-deployment 
