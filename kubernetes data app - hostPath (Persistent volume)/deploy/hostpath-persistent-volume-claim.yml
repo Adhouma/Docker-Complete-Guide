@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hostpath-persistent-volume-claim
+spec:
+  volumeName: hostpath-persistent-volume # Must match the volume name in hostpath-persistent-volume.yml file (Claim hostpath-persistent-volume)
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+
+# The next step is to create a PersistentVolumeClaim. Pods use PersistentVolumeClaims to request physical storage. 
+# In this exercise,  you create a PersistentVolumeClaim that requests a volume of at least 1 gibibytes that can provide read-write access for at most one Node at a time.

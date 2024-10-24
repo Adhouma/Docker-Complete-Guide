@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+# Deployment name
+metadata:
+  name: story-deployment
+  labels:
+    app: story
+# Deployment specification
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: story
+  template:
+    metadata:
+      labels:
+        app: story
+    # Pod specification
+    spec:
+      containers:
+      - name: story
+        image: adhouma/kubernetes-data-app:v1
+        ports:
+        - containerPort: 3000
+        # Assign story-volume to containers
+        volumeMounts:
+        - mountPath: /app/story
+          name: story-volume
+      # Volume spec
+      volumes:
+        - name: story-volume
+          # Must match the volume name in hostpath-persistent-volume-claim.yml file 
+          # (Use this PersistentVolumeClaim to claim the required volume)
+          persistentVolumeClaim:
+            claimName: hostpath-persistent-volume-claim
+
+
+# Run this deployment in this order
+# kubectl apply -f ./deploy/hostpath-persistent-volume.yml 
+# kubectl apply -f ./deploy/hostpath-persistent-volume-claim.yml
+# kubectl apply -f ./deploy/deployment.yml
+
+# If you make changes, just retag your image and push it to dockerhub ... then restart your deployment to see the changes you made with
+# kubectl rollout restart deployment/story-deployment 
