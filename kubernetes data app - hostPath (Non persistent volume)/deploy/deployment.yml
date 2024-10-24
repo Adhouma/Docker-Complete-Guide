@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+# Deployment name
+metadata:
+  name: story-deployment
+  labels:
+    app: story
+# Deployment specification
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: story
+  template:
+    metadata:
+      labels:
+        app: story
+    # Pod specification
+    spec:
+      containers:
+      - name: story
+        image: adhouma/kubernetes-data-app:v1
+        ports:
+        - containerPort: 3000
+        # Assign story-volume to containers
+        volumeMounts:
+        - mountPath: /app/story
+          name: story-volume
+      # Volume spec
+      volumes:
+        - name: story-volume
+          # Volume type is hostPath
+          hostPath:
+            path: /data
+            type: DirectoryOrCreate
+
+# A hostPath volume mounts a file or directory from the host node's filesystem into your Pod. 
+# This is not something that most Pods will need, but it offers a powerful escape hatch for some applications.
+
+# The hostPath volume hava a downside => it will be destroyed when a pod is removed (work great with more than 1 replicas but work on only Node environment)
+# So its a non persistent volume
+
+# Run this deployment with
+# kubectl apply -f ./deploy/deployment.yml
+
+# If you make changes, just retag your image and push it to dockerhub ... then restart your deployment to see the changes you made with
+# kubectl rollout restart deployment/story-deployment 
