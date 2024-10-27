@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+# Deployment name
+metadata:
+  name: user-api-deployment
+  labels:
+    app: user-api
+# Deployment specification
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-api
+  template:
+    metadata:
+      labels:
+        app: user-api
+    # Pod specification
+    spec:
+      # Here we have 1 pod that contains 2 containers (user-api & auth-api container)
+      # We only expose 8080 port which is the port exposed by the user-api container because we do not want the auth-api exposed to the outside world
+      # Only the user-api is exposed (see service ports), and the auth-api can only communicate with the user-api
+      # It's a pod internal communication (ake a look to the course pdf to see the big picture)
+      containers:
+      - name: user-api
+        image: adhouma/kubernetes-networking-user-api-app:latest
+        # When there is a pod internal communication between containers (user-api & auth-api)
+        # The localhost address is used to communicate containers in the same pod with each other
+        # Unlike docker which use the container name
+        env:
+          - name: AUTH_ADDRESS
+            value: localhost
+      - name: auth-api
+        image: adhouma/kubernetes-networking-auth-api-app:latest
+        ports:
+        - containerPort: 8080
+
+
+# Run this deployment with
+# kubectl apply -f ./deploy/user-api-deployment.yml
+
+# If you make changes, just retag your image and push it to dockerhub ... then restart your deployment to see the changes you made with
+# kubectl rollout restart deployment/user-api-deployment 
