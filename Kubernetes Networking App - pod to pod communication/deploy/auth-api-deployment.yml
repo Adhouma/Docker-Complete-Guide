@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+# Deployment name
+metadata:
+  name: auth-api-deployment
+  labels:
+    app: auth-api
+# Deployment specification
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-api
+  template:
+    metadata:
+      labels:
+        app: auth-api
+    # Pod specification
+    spec:
+      containers:
+        - name: auth-api
+          image: adhouma/kubernetes-networking-auth-api-app:latest
+          ports:
+          - containerPort: 80
+
+
+# Run this deployment with
+# kubectl apply -f ./deploy/auth-api-deployment.yml
+
+# If you make changes, just retag your image and push it to dockerhub ... then restart your deployment to see the changes you made with
+# kubectl rollout restart deployment/auth-api-deployment 

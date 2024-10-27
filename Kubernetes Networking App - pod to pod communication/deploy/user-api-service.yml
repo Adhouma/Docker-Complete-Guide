@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-api-service
+spec:
+  selector:
+    app: user-api
+  type: LoadBalancer
+  # We only expose 8080 port which is the port exposed by the user-api container because we do not want the auth-api exposed to the outside world
+  # Only the user-api is exposed, and the auth-api can only communicate with the user-api
+  # That's why we have a user-api-service and no auth-api-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+# Run this service with
+# kubectl apply -f ./deploy/user-api-service.yml
+
+# Expose the service in your machine http://127.0.0.1:62545 for example using this command
+# minikube service user-api-service

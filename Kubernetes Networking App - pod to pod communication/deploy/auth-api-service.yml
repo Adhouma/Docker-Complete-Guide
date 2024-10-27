@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-api-service
+spec:
+  selector:
+    app: auth-api
+  # We use the ClusterIP type instead of LoadBalancer because we want the aut-api only reachable from inside the
+  # cluster and not to the outside world (only can communicate with the user-api and task-api no postman ... 
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+# Run this service with
+# kubectl apply -f ./deploy/auth-api-service.yml
+
+# Expose the service in your machine http://127.0.0.1:62545 for example using this command
+# minikube service auth-api-service
